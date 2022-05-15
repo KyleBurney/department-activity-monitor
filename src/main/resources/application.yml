@@ -1,0 +1,37 @@
+spring:
+  profiles:
+    active: dev
+
+application:
+  name: department-activity-monitor
+  processorCount: 1
+
+logging:
+  level:
+    org.springframework: INFO
+    com.amazonaws.request: ERROR
+  path: /var/log/${application.name}/application.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS}: level=%-5p thread=%-30.-30t logger=%-35.35logger{0} message=%m%n%wex"
+    console: "%clr(%d{MM-dd HH:mm:ss.SSS}){faint} %clr(%-5p){magenta} %clr([%-30.-30t{14}]){faint} %clr(%-35.35logger{0}){cyan} %clr(:){faint} %m%n%wex"
+
+activityMonitor:
+  minContourArea: 5000
+  binarizationThreshold: 70
+  departmentWidth: 640
+  departmentHeight: 480
+  numFramesToAverage: 3
+  delayBetweenFrames: 200
+
+kafka:
+  producer:
+    acks: all
+    batchSize: 0
+    topic: store-sensor-events-test
+    maxRequestSize: 10000000
+    compressionType: gzip
+    retries: 10
+    retryBackoffMs: 100
+    maxInflightReqPerConnection: 1
+    securityProtocol: SASL_SSL
+    saslMechanism: SCRAM-SHA-512

@@ -1,0 +1,4 @@
+spring.profiles: dev
+
+logging:
+  path: ./out/application-dev.log

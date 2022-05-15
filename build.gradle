@@ -1,0 +1,66 @@
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'application'
+apply plugin: 'com.commercehub.gradle.plugin.avro'
+
+mainClassName = 'com.store.app.departmentactivitymonitor.Program'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://packages.confluent.io/maven/'}
+}
+
+configurations.all {
+    exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+}
+
+ext {
+    springBootVersion = '1.5.8.RELEASE'
+    guavaVersion = '23.2-jre'
+    logbackVersion = '4.4'
+    kafkaVersion = '2.0.0'
+    assertjVersion = '3.8.0'
+    gradleVersion = '4.2.1'
+    avroVersion = '5.0.1'
+    datadogVersion = '2.5'
+    opencvVersion = '3.4.2-1'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://packages.confluent.io/maven/" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE")
+        classpath "com.commercehub.gradle.plugin:gradle-avro-plugin:0.15.0"
+    }
+}
+
+dependencies {
+    compile(
+            "com.datadoghq:java-dogstatsd-client:$datadogVersion",
+            "com.google.guava:guava:$guavaVersion",
+            "net.logstash.logback:logstash-logback-encoder:$logbackVersion",
+            "org.apache.kafka:kafka-clients:$kafkaVersion",
+            "io.confluent:kafka-avro-serializer:$avroVersion",
+            "org.openpnp:opencv:$opencvVersion",
+            "org.springframework.boot:spring-boot-starter",
+            "org.springframework:spring-web",
+    )
+    testCompile(
+            "org.assertj:assertj-core:$assertjVersion",
+            'org.springframework.boot:spring-boot-starter-test',
+    )
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "$gradleVersion"
+}
+
+test {
+    testLogging {
+        events "failed", "skipped"
+        exceptionFormat "full"
+    }
+}
